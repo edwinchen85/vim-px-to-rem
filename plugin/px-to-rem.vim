@@ -2,15 +2,15 @@
 
 " A global variable that allows a user to change their default base font-size.
 if !exists('g:px_to_rem_base')
-  let g:px_to_rem_base = 16
+  let g:px_to_rem_base = 16.0
 endif
 
 function! VimPxRemConvertPxToRem(px)
-  return printf("%0.3frem", 1.0/g:px_to_rem_base*a:px)
+  return printf("%srem", substitute(string(1/g:px_to_rem_base*a:px), "\.0$", "", 0))
 endfunction
 
 function! VimPxRemConvertRemToPx(rem)
-  return printf("%.0fpx", round(g:px_to_rem_base*str2float(a:rem)))
+  return printf("%.0gpx", round(g:px_to_rem_base*str2float(a:rem)))
 endfunction
 
 " Converts Selected pixels to rem vice versa.
@@ -37,7 +37,7 @@ function! VimPxRemConvert(convert_to, skip_confirmation, start_line, end_line)
     let search_for = '\v(\d+)px'
     let conversion_function = "VimPxRemConvertPxToRem"
   endif
-  
+
   " Execute the command
   execute a:start_line . "," . a:end_line ."s/". search_for . "/" .'\='.conversion_function.'(submatch(1))' . "/" . modifiers
 endfunction
